@@ -66,8 +66,8 @@ namespace NeuralNetwork1 {
 
 
     class Neuron {
-        public double[] weight = new double[2];
-        public double bias = 0;
+        private double[] weight = new double[2];
+        private double bias = 0;
         private readonly double learningRate = 0.5;
         private double value = 0;    //sum of weighted imputs and bias
         private double error = 0;    //difference between target and value
