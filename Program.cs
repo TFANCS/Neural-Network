@@ -27,9 +27,11 @@ namespace NeuralNetwork1 {
                 trainingSets.Add(new TrainingSet(new double[2] { 1, 1 }, 0));
             }
 
-            neuronMid1.weight[1] = 1;
-            neuronMid2.weight[0] = 1;
-            neuronOut.bias = 1;
+
+            neuronMid1.SetWeight(1, 1);
+            neuronMid2.SetWeight(1, 0);
+            neuronOut.SetBias(1);
+
 
             for (int i = 0; i < trainingSets.Count(); i++) {
                 neuronIn1.SetValue(trainingSets[i].Features[0]);
@@ -91,6 +93,16 @@ namespace NeuralNetwork1 {
 
         public double GetValue() {
             return value;
+        }
+
+        public void SetWeight(double weight, int index) {
+            this.weight[index] = weight;
+            return;
+        }
+
+        public void SetBias(double bias) {
+            this.bias = bias;
+            return;
         }
 
 
