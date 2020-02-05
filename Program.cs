@@ -13,24 +13,23 @@ namespace NeuralNetwork1 {
             Neuron neuronIn2 = new Neuron(1);
             Neuron neuronMid1 = new Neuron(1);
             Neuron neuronMid2 = new Neuron(1);
+            Neuron neuronMid3 = new Neuron(1);
             Neuron neuronOut = new Neuron(0);
             neuronMid1.Connect(new Neuron[2] { neuronIn1, neuronIn2 });
             neuronMid2.Connect(new Neuron[2] { neuronIn1, neuronIn2 });
-            neuronOut.Connect(new Neuron[2] { neuronMid1, neuronMid2 });
+            neuronMid3.Connect(new Neuron[2] { neuronIn1, neuronIn2 });
+            neuronOut.Connect(new Neuron[3] { neuronMid1, neuronMid2, neuronMid3 });
 
             List<TrainingSet> trainingSets = new List<TrainingSet>();
 
-            for (int i = 0; i < 400; i++) {
-                trainingSets.Add(new TrainingSet(new double[2] { 0, 0 }, 0));
-                trainingSets.Add(new TrainingSet(new double[2] { 0, 1 }, 1));
-                trainingSets.Add(new TrainingSet(new double[2] { 1, 0 }, 1));
-                trainingSets.Add(new TrainingSet(new double[2] { 1, 1 }, 0));
+            for (int i = 0; i < 800; i++) {
+                trainingSets.Add(new TrainingSet(new double[2] { 0, 0 }, new double[1] { 0}));
+                trainingSets.Add(new TrainingSet(new double[2] { 0, 1 }, new double[1] { 1}));
+                trainingSets.Add(new TrainingSet(new double[2] { 1, 0 }, new double[1] { 1}));
+                trainingSets.Add(new TrainingSet(new double[2] { 1, 1 }, new double[1] { 0}));
             }
 
 
-            neuronMid1.SetWeight(1, 1);
-            neuronMid2.SetWeight(1, 0);
-            neuronOut.SetBias(1);
 
 
             for (int i = 0; i < trainingSets.Count(); i++) {
@@ -38,12 +37,13 @@ namespace NeuralNetwork1 {
                 neuronIn2.SetValue(trainingSets[i].Features[1]);
                 neuronMid1.ForwardPropagation();
                 neuronMid2.ForwardPropagation();
+                neuronMid3.ForwardPropagation();
                 neuronOut.ForwardPropagation();
-                neuronOut.CalcError(trainingSets[i].Target);
+                neuronOut.CalcError(trainingSets[i].Target[0]);
                 neuronOut.BackPropagation();
                 double result = neuronOut.GetValue();
-                Console.Write("Expectd : "+ trainingSets[i].Target + "   result: " + result + "   ");
-                if (Math.Abs(result - trainingSets[i].Target) < 0.1) Console.WriteLine("v");
+                Console.Write("Expectd : "+ trainingSets[i].Target[0] + "   result: " + result + "   ");
+                if (Math.Abs(result - trainingSets[i].Target[0]) < 0.1) Console.WriteLine("v");
                 else Console.WriteLine("X");
             }
 
@@ -55,9 +55,9 @@ namespace NeuralNetwork1 {
 
     class TrainingSet {
         public double[] Features { get; private set; }
-        public double Target { get; private set; }
+        public double[] Target { get; private set; }
 
-        public TrainingSet(double[] features, double target) {
+        public TrainingSet(double[] features, double[] target) {
             Features = features;
             Target = target;
         }
@@ -68,7 +68,9 @@ namespace NeuralNetwork1 {
 
 
     class Neuron {
-        private double[] weight = new double[2];
+        static Random random = new Random();
+
+        private double[] weight = new double[3];
         private double bias = 0;
         private readonly double learningRate = 0.5;
         private double value = 0;    //sum of weighted imputs and bias
@@ -80,9 +82,13 @@ namespace NeuralNetwork1 {
 
         public Neuron(int actFunc) {
             this.actFunc = actFunc;
+            bias = random.NextDouble();
+            for (int i = 0; i < weight.Length; i++) {
+                weight[i] = random.NextDouble();
+            }
         }
 
-        public void Connect(Neuron[] input) {
+        public void Connect(in Neuron[] input) {
             this.input = input;
             return;
         }
@@ -100,10 +106,6 @@ namespace NeuralNetwork1 {
             return;
         }
 
-        public void SetBias(double bias) {
-            this.bias = bias;
-            return;
-        }
 
 
         public void ForwardPropagation() {
@@ -231,3 +233,4 @@ namespace NeuralNetwork1 {
 
 
 }
+
