@@ -16,8 +16,6 @@ namespace NeuralNetwork1 {
 
             layers.Add(new Affine(100,784));
             layers.Add(new ReLU());
-            layers.Add(new Affine(100, 100));
-            layers.Add(new ReLU());
             layers.Add(new Affine(10, 100));
             layers.Add(new Softmax());
 
